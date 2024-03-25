@@ -1,107 +1,82 @@
-module.exports = function toReadable(n) {
-    const decimes = [
-        "zero",
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "six",
-        "seven",
-        "eight",
-        "nine",
-        "ten",
-        "eleven",
-        "twelve",
-        "thirteen",
-        "fourteen",
-        "fifteen",
-        "sixteen",
-        "seventeen",
-        "eighteen",
-        "nineteen",
-        "twenty",
-    ];
+module.exports = function toReadable(number) {
+    const decimal = (number) => {
+        if (number === 0) return "zero";
+        if (number === 1) return "one";
+        if (number === 2) return "two";
+        if (number === 3) return "three";
+        if (number === 4) return "four";
+        if (number === 5) return "five";
+        if (number === 6) return "six";
+        if (number === 7) return "seven";
+        if (number === 8) return "eight";
+        if (number === 9) return "nine";
+        if (number === 10) return "ten";
+    };
 
-    for (i = 20; i < 100; i++) {
-        if ((n) => 20 && n <= 99) {
-            if (n <= 20) return decimes[n];
+    const twenties = (number) => {
+        if (number === 11) return "eleven";
+        if (number === 12) return "twelve";
+        if (number === 13) return "thirteen";
+        if (number === 14) return "fourteen";
+        if (number === 15) return "fifteen";
+        if (number === 16) return "sixteen";
+        if (number === 17) return "seventeen";
+        if (number === 18) return "eighteen";
+        if (number === 19) return "nineteen";
+        if (number === 20) return "twenty";
+    };
 
-            if (n > 20 && n <= 29) return `twenty ${decimes[n.toString()[1]]}`;
+    const hundredths = (first, second) =>
+        `${first} ${second > 0 ? decimal(second) : ""}`.trim();
 
-            if (n >= 30 && n <= 39)
-                return n === 30
-                    ? "thirty"
-                    : `thirty ${decimes[n.toString()[1]]}`;
+    const thousandSecondPart = (number) => {
+        if (number <= 10) return decimal(number);
+        if (number <= 20 && number > 10) return twenties(number);
+        if (number <= 99 && number > 20) return getHundredths(number);
+    };
 
-            if (n >= 40 && n <= 49)
-                return n === 40 ? "forty" : `forty ${decimes[n.toString()[1]]}`;
+    const thousand = (first, second) =>
+        `${first} hundred ${second === "zero" ? "" : second}`.trim();
 
-            if (n >= 50 && n <= 59)
-                return n === 50 ? "fifty" : `fifty ${decimes[n.toString()[1]]}`;
-
-            if (n >= 60 && n <= 69)
-                return n === 60 ? "sixty" : `sixty ${decimes[n.toString()[1]]}`;
-
-            if (n >= 70 && n <= 79)
-                return n === 70
-                    ? "seventy"
-                    : `seventy ${decimes[n.toString()[1]]}`;
-
-            if (n >= 80 && n <= 89)
-                return n === 80
-                    ? "eighty"
-                    : `eighty ${decimes[n.toString()[1]]}`;
-
-            if (n >= 90 && n <= 99) {
-                return n === 90
-                    ? "ninety"
-                    : `ninety ${decimes[n.toString()[1]]}`;
-            }
+    const getHundredths = (number) => {
+        if (number <= 29 && number > 19) {
+            return hundredths("twenty", number % 10);
         }
-    }
-
-    for (i = 100; i < 200; i++) {
-        if (n >= 100 && n <= 109)
-            return n === 100 ? "one hundred" : `one hundred ${decimes}`;
-        if (n >= 120 && n <= 129)
-            return n === 120
-                ? "one hundred twenty"
-                : `one hundred ${decimes[n.toString()[2]]}`;
-        if (n >= 130 && n <= 139)
-            return n === 130
-                ? "one hundred thirty"
-                : `one hundred thirty ${decimes[n.toString()[2]]}`;
-
-        if (n >= 140 && n <= 149)
-            return n === 140
-                ? "one hundred forty"
-                : `one hundred forty ${decimes[n.toString()[2]]}`;
-
-        if (n >= 150 && n <= 159)
-            return n === 150
-                ? "one hundred fifty"
-                : `one hundred fifty ${decimes[n.toString()[2]]}`;
-
-        if (n >= 160 && n <= 169)
-            return n === 160
-                ? "one hundred sixty"
-                : `one hundred sixty ${decimes[n.toString()[2]]}`;
-
-        if (n >= 170 && n <= 179)
-            return n === 170
-                ? "one hundred seventy"
-                : `one hundred seventy ${decimes[n.toString()[2]]}`;
-
-        if (n >= 180 && n <= 189)
-            return n === 180
-                ? "one hundred eighty"
-                : `one hundred eighty ${decimes[n.toString()[2]]}`;
-
-        if (n >= 190 && n <= 199) {
-            return n === 190
-                ? "one hundred ninety"
-                : `one hundred ninety ${decimes[n.toString()[2]]}`;
+        if (number <= 39 && number > 29) {
+            return hundredths("thirty", number % 10);
         }
-    }
+        if (number <= 49 && number > 39) {
+            return hundredths("forty", number % 10);
+        }
+        if (number <= 59 && number > 49) {
+            return hundredths("fifty", number % 10);
+        }
+        if (number <= 69 && number > 59) {
+            return hundredths("sixty", number % 10);
+        }
+        if (number <= 79 && number > 69) {
+            return hundredths("seventy", number % 10);
+        }
+        if (number <= 89 && number > 79) {
+            return hundredths("eighty", number % 10);
+        }
+        if (number <= 99 && number > 89) {
+            return hundredths("ninety", number % 10);
+        }
+
+        if (number <= 99 && number > 89) {
+            return hundredths("sixty", number % 10);
+        }
+    };
+
+    const getThousand = (number) =>
+        thousand(
+            decimal(Math.floor(number / 100)),
+            thousandSecondPart(number % 100)
+        );
+
+    if (number <= 10) return decimal(number);
+    if (number <= 20 && number > 10) return twenties(number);
+    if (number <= 99 && number > 20) return getHundredths(number);
+    if (number <= 999 && number > 99) return getThousand(number);
 };
